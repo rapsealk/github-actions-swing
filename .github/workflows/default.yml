@@ -1,0 +1,24 @@
+name: default
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10.5"
+
+    - name: Get current time
+      id: current-time
+      run: python -c "import datetime, sys; sys.stdout.write((datetime.datetime.utcnow() + datetime.timedelta(hours=9)).isoformat())" >> $GITHUB_OUTPUT
+
+    - name: Access the current time
+      run: echo "${{ steps.current-time.outputs.tag }}"
