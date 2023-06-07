@@ -18,7 +18,7 @@ jobs:
 
     - name: Get current time
       id: current-time
-      run: python -c "import datetime, sys; sys.stdout.write((datetime.datetime.utcnow() + datetime.timedelta(hours=9)).isoformat())" >> $GITHUB_OUTPUT
+      run: python -c "import datetime, sys; sys.stdout.write((datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime('%Y-%m-%dT%H:%M:%S'))" >> $GITHUB_OUTPUT
 
     - name: Access the current time
       run: echo "${{ steps.current-time.outputs.tag }}"
