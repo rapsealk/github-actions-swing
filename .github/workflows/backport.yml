@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.merged == 'true' }}
     steps:
+      - uses: actions/checkout@v4
       - run: |
           echo "github.event.pull_request.merged: ${{ github.event.pull_request.merged }}"
           echo "github.event.pull_request.merge_commit_sha: ${{ github.event.pull_request.merge_commit_sha }}"
