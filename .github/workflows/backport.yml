@@ -14,3 +14,10 @@ jobs:
           git checkout ${{ github.event.pull_request.milestone.title }}
           git cherry-pick $GITHUB_SHA
           git commit --amend -m "$(git log -1 --pretty=%B | head -1)\n\nBackported-from: main\nBackported-to: ${{ github.event.pull_request.milestone.title }}"
+  backport-check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "github.event.pull_request.merged: ${{ github.event.pull_request.merged }}"
+          echo "github.event.pull_request.merge_commit_sha: ${{ github.event.pull_request.merge_commit_sha }}"
+          echo "github.event.pull_request.milestone.title: ${{ github.event.pull_request.milestone.title }}"
