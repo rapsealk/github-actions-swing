@@ -7,7 +7,7 @@ on:
 jobs:
   backport:
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.merged == 'true' }}
+    if: ${{ github.event.pull_request.merged == true }}
     steps:
       - run: |
           echo "github.event.pull_request.merged: ${{ github.event.pull_request.merged }}"
