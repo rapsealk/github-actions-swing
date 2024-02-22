@@ -13,4 +13,7 @@ jobs:
       - run: |
           git checkout ${{ github.event.pull_request.milestone.title }}
           git cherry-pick $GITHUB_SHA
-          git commit --amend -m "$(git log -1 --pretty=%B | head -1)\n\nBackported-from: main\nBackported-to: ${{ github.event.pull_request.milestone.title }}"
+          git commit --amend \
+            -m "$(git log -1 --pretty=%B)" \
+            --trailer "Backported-from=main" \
+            --trailer "Backported-to=${{ github.event.pull_request.milestone.title }}"
