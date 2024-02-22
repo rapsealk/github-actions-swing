@@ -1,0 +1,12 @@
+name: check-pr-branch
+
+on:
+  pull_request:
+    types: [ opened, edited ]
+
+jobs:
+  default:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node .github/scripts/check-pr-branch.js
