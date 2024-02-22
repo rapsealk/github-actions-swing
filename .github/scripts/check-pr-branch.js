@@ -1,8 +1,4 @@
-const core = require("@actions/core");
-const github = require("@actions/github");
-const comment = require("./comment");
-
-async function run() {
+module.exports = async ({ core, github, context }) => {
   try {
     const baseBranch = github.context.payload.pull_request.base.ref;
     const headBranch = github.context.payload.pull_request.head.ref;
@@ -12,18 +8,22 @@ async function run() {
       { base: "main", headPrefix: "feature/" },
       { base: "main", headPrefix: "fix/" },
       { base: "23.09", headPrefix: "hotfix/" },
-      { base: "24.03", headPrefix: "hotfix/" },
+      { base: "23.09", headPrefix: "hotfix/" },
     ];
 
     // Check if the branch pair is allowed
-    const isAllowedPair = allowedBranchPairs.some(pair =>
+    const isAllowedPair = allowedBranchPairs.some((pair) =>
       baseBranch === pair.base && headBranch.startsWith(pair.headPrefix)
     );
 
     if (!isAllowedPair) {
-      const message = 'Warning: This pull request has an invalid branch pair. Please check the branch naming convention.';
-      // Add your logic to post the comment to the pull request
-      await comment.create(message);
+      const message = "Warning: This pull request has an invalid branch pair. Please check the branch naming convention.";
+      await github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo,repo,
+        body: body,
+      });
 
       // Fail the workflow
       core.setFailed(message);
@@ -31,6 +31,4 @@ async function run() {
   } catch (error) {
     core.setFailed(error.message);
   }
-}
-
-run();
+};
