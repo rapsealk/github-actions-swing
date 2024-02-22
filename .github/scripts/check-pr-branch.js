@@ -1,7 +1,7 @@
 module.exports = async ({ core, github, context }) => {
   try {
-    const baseBranch = github.context.payload.pull_request.base.ref;
-    const headBranch = github.context.payload.pull_request.head.ref;
+    const baseBranch = context.payload.pull_request.base.ref;
+    const headBranch = context.payload.pull_request.head.ref;
 
     // Define allowed branch pairs
     const allowedBranchPairs = [
