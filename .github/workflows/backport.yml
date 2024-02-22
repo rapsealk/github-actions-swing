@@ -1,0 +1,19 @@
+name: backport
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ main ]
+
+jobs:
+  backport:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.merged == 'true' }}
+    steps:
+      - run: |
+          git checkout ${{ github.event.pull_request.milestone.title }}
+          git cherry-pick $GITHUB_SHA
+          git commit --amend \
+            -m "$(git log -1 --pretty=%B)" \
+            --trailer "Backported-from=main" \
+            --trailer "Backported-to=${{ github.event.pull_request.milestone.title }}"

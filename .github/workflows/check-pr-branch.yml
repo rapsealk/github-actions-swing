@@ -1,0 +1,16 @@
+name: check-pr-branch
+
+on:
+  pull_request:
+    types: [ opened, edited ]
+
+jobs:
+  default:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const script = require('.github/scripts/check-pr-branch.js');
+            await script({ core, github, context });
