@@ -1,0 +1,63 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Release to GitHub
+      uses: softprops/action-gh-release@v2
+      with:
+        token: ${{ secrets.PAT }}
+        body_path: "CHANGELOG.md"
+        # prerelease: ${{ env.IS_PRERELEASE }}
+        files: |
+          CHANGELOG.md
+  build-rust-binaries:
+    needs: [ release ]
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+    - name: Build rust binary
+      run: |
+        cd rust-example
+        cargo build --release
+        ls target/release
+        mv target/release/rust-example ../rust-cli-${{ github.ref_name }}-${{ matrix.os }}
+    - name: Upload to GitHub release
+      run: |
+        gh release upload ${{ github.ref_name }} rust-cli-${{ github.ref_name }}-${{ matrix.os }}
+  build-rust-binaries-windows:
+    needs: [ release ]
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+    - name: Build rust binary
+      run: |
+        cd rust-example
+        cargo build --release
+        ls target/release
+        mv target/release/rust-example.exe ../rust-cli-${{ github.ref_name }}-windows.exe
+    - name: Upload to GitHub release
+      run: |
+        gh release upload ${{ github.ref_name }} rust-cli-${{ github.ref_name }}-windows.exe
