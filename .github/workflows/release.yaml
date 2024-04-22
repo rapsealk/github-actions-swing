@@ -5,6 +5,9 @@ on:
     tags:
       - "*"
 
+permissions:
+  contents: write
+
 jobs:
   release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
