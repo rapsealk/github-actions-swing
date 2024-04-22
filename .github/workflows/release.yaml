@@ -35,6 +35,7 @@ jobs:
       run: |
         cd rust-example
         cargo build --release
+        mv target/release/rust-example/rust-example ../rust-cli-${{ github.ref_name }}-${{ matrix.os }}
     - name: Upload to GitHub release
       run: |
-        gh release upload ${{ github.ref_name }} rust-example/target/release/rust-example/rust-cli-${{ github.ref_name }}-${{ matrix.os }}.zip
+        gh release upload ${{ github.ref_name }} rust-cli-${{ github.ref_name }}-${{ matrix.os }}
