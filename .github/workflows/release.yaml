@@ -14,7 +14,7 @@ jobs:
     - name: Release to GitHub
       uses: softprops/action-gh-release@v2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PAT }}
         body_path: "CHANGELOG.md"
         # prerelease: ${{ env.IS_PRERELEASE }}
         files: |
@@ -26,8 +26,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -35,6 +33,6 @@ jobs:
       run: |
         cd rust-example
         cargo build --release
-    - name: Upload conda-pack to GitHub release
+    - name: Upload to GitHub release
       run: |
         gh release upload ${{ github.ref_name }} rust-example/target/release/rust-example/rust-cli-${{ github.ref_name }}-${{ matrix.os }}.zip
