@@ -27,7 +27,7 @@ jobs:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,3 +43,21 @@ jobs:
     - name: Upload to GitHub release
       run: |
         gh release upload ${{ github.ref_name }} rust-cli-${{ github.ref_name }}-${{ matrix.os }}
+  build-rust-binaries-windows:
+    needs: [ release ]
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+    - name: Build rust binary
+      run: |
+        cd rust-example
+        cargo build --release
+        ls target/release
+        mv target/release/rust-example.exe ../rust-cli-${{ github.ref_name }}-windows.exe
+    - name: Upload to GitHub release
+      run: |
+        gh release upload ${{ github.ref_name }} rust-cli-${{ github.ref_name }}-windows.exe
