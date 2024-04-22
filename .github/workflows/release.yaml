@@ -14,6 +14,7 @@ jobs:
     - name: Release to GitHub
       uses: softprops/action-gh-release@v2
       with:
+        token: ${{ secrets.GITHUB_TOKEN }}
         body_path: "CHANGELOG.md"
         # prerelease: ${{ env.IS_PRERELEASE }}
         files: |
